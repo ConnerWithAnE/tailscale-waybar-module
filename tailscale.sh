@@ -1,21 +1,33 @@
 #!/usr/bin/env bash
 
-flags_file="$HOME/.config/waybar/tailscale/tailscale_up_flags.txt"
+config_file="$HOME/.config/waybar/tailscale/config.json"
 
-# Read flags, skipping comments and blank lines
-mapfile -t ARGS < <(grep -vE '^\s*#' "$flags_file" | sed '/^\s*$/d')
+# Read config
+flags=$(jq -r '.["tailscale-up-flags"] | join(" ")' "$config_file")
+
+# Display 'Connected' and 'Disconnected'
+display_text=$(jq -r '.["display-connection-status"]' "$config_file")
+
+if [ "$display_text" = true ]; then
+    display_class="-text"
+else
+    display_class=""
+fi
+
 
 # Get the status output
 status=$(tailscale status 2>&1)
 
 if [[ "$status" =~ "Tailscale is stopped" ]] || echo "$status" | grep -q "Logged out"; then
-    status_val=0
+    status_val='state-0'
+    tool_tip='Stopped'
 else
-    status_val=1
+    status_val='state-1'
+    tool_tip=$(tailscale status | awk '$NF == "-" {print $1}')
 fi
 
 if [ "$1" = "toggle" ]; then
-    if [ "$status_val" = "0" ]; then
+    if [ "$status_val" = "state-0" ]; then
         # Run tailscale up and capture in a temp file
 	
 	if echo "$status" | grep -q "Logged out"; then
@@ -27,32 +39,32 @@ if [ "$1" = "toggle" ]; then
 	    case "$ACTION_RESULT" in
 		"open")
 	        xdg-open "$url"
-	        echo "{\"class\": \"state-$status_val\", \"text\": \"Disconnected\"}"
+	        echo "{\"class\": \"$status_val$display_class\", \"text\": \"$( [ "$display_text" = "true" ] && echo "Disconnected" || echo "  " )\", \"tooltip\": \"$tool_tip\"}"
 		;;
 	    *)
 		# Handle timeout or dismissal
 	        # echo "Notification dismissed or timed out."
-	        echo "{\"class\": \"state-$status_val\", \"text\": \"Disconnected\"}"
+	        echo "{\"class\": \"$status_val$display_class\", \"text\": \"$( [ "$display_text" = "true" ] && echo "Disconnected" || echo "  " )\", \"tooltip\": \"$tool_tip\"}"
 		;;
 	    esac
 	    exit 1
 	fi
 	# Capture standard output, will not work if 'sudo tailscale set --operator=$USER' not run
-	output=$(tailscale up "${ARGS[@]}" 2>&1)
+	output=$(tailscale up $flags 2>&1)
 
 	# Check if the output contains "Access denied"
 	if echo "$output" | grep -q "Access denied"; then
 	    notify-send "$(echo '$output' | sed 's/,/,\n/')"
 	    # Optional: exit with a non-zero status
-	    echo "{\"class\": \"state-$status_val\", \"text\": \"Disconnected\"}"
+	    echo "{\"class\": \"$status_val$display_class\", \"text\": \"$( [ "$display_text" = "true" ] && echo "Disconnected" || echo "  " )\", \"tooltip\": \"$tool_tip\"}"
 	    exit 1
 	elif echo "$output" | grep -q "Logged Out"; then
 	    notify-send "$output"
 	    # Optional: exit with a non-zero status 
-	    echo "{\"class\": \"state-$status_val\", \"text\": \"Disconnected\"}"
+	    echo "{\"class\": \"$status_val$display_class\", \"text\": \"$( [ "$display_text" = "true" ] && echo "Disconnected" || echo "  " )\", \"tooltip\": \"$tool_tip\"}"
 	    exit 1
 	else
-	    status_val=1
+	    status_val='state-1'
 	fi
     else
 	output=$(tailscale down 2>&1)
@@ -60,11 +72,11 @@ if [ "$1" = "toggle" ]; then
 	if echo "$output" | grep -q "Access denied"; then
 	    (notify-send "Tailscale Error" "$(sed '/To not require root/ s/,/,\n/' <<<"$output")")# notify-send "$output"
 	    # Optional: exit with a non-zero status
-	    echo "{\"class\": \"state-$status_val\", \"text\": \"Disconnected\"}"
+	    echo "{\"class\": \"$status_val$display_class\", \"text\": \"$( [ "$display_text" = "true" ] && echo "Disconnected" || echo "  " )\", \"tooltip\": \"$tool_tip\"}"
 	    exit 1
 	fi
 
-	status_val=0
+	status_val='state-0'
     fi
 fi
 
@@ -72,15 +84,15 @@ fi
 final_status=$(tailscale status 2>&1)
 
 if [[ "$final_status" =~ "Tailscale is stopped" ]] || echo "$final_status" | grep -q "Logged out"; then
-    status_val=0
-    connected="Disconnected"
+    status_val='state-0'
+    tool_tip='Stopped'
 else
-    status_val=1
-    connected="Connected"
+    status_val='state-1'    
+    tool_tip=$(tailscale status | awk '$NF == "-" {print $1}')
 fi
 
 
 # Output JSON for Waybar
-echo "{\"class\": \"state-$status_val\", \"text\": \"$connected\"}"
+echo "{\"class\": \"$status_val$display_class\", \"text\": \"$( [ "$display_text" = "true" ] && echo $( [ "$status_val" = "state-0" ] && echo "Disconnected" || echo "Connected" ) || echo "  " )\", \"tooltip\": \"$tool_tip\"}"
 
 

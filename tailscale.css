@@ -1,23 +1,37 @@
 #custom-tailscale {
-   background-image: url("icons/tray-off.svg");
-   background-position: right center;
    background-repeat: no-repeat;
    background-size: 15px 15px;
-   padding-right: 25px;
-   padding-left: 10px;
    margin-left: 10px;
    color: #fff;
 }
 
 
-#custom-tailscale.state-1 {
+#custom-tailscale.state-1-text {
     background-image: url("icons/tray-on.svg");
-}
-/* State 0 */
-#custom-tailscale.state-0 {
-    background-image: url("icons/tray-off.svg");
+    background-position: right center;
+    padding-right: 25px;
+    margin-right: 5px;
 }
 
-/* State 1 */
+#custom-tailscale.state-0-text {
+    background-image: url("icons/tray-off.svg");
+    background-position: right center;
+    padding-right: 25px;
+    margin-right: 5px;
+}
+
+#custom-tailscale.state-1 {
+    background-image: url("icons/tray-on.svg"); 
+    background-position: center;
+    background-size: 15px 15px;
+    padding-right: 5px;
+}
+
+#custom-tailscale.state-0 {
+    background-image: url("icons/tray-off.svg"); 
+    background-position: center;
+    background-size: 15px 15px;
+    padding-right: 5px;
+}
 
 
