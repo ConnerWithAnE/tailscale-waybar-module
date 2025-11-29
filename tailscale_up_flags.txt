@@ -1,0 +1,8 @@
+# Lines starting with '#' are ignored
+
+# VPN options
+--accept-routes
+# --advertise-exit-node
+
+# Logging
+# --verbose

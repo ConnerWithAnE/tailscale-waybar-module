@@ -1,0 +1,6 @@
+{
+    "tailscale-up-flags" : [
+	"--accept-routes"
+    ],
+    "display-connection-status" : true
+}
