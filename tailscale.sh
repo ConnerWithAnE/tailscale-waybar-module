@@ -23,7 +23,7 @@ if [[ "$status" =~ "Tailscale is stopped" ]] || echo "$status" | grep -q "Logged
     tool_tip='Stopped'
 else
     status_val='state-1'
-    tool_tip=$(tailscale status | awk '$NF == "-" {print $1}')
+    tool_tip=$(tailscale status | awk '$NF == "-" {print $1; exit}')
 fi
 
 if [ "$1" = "toggle" ]; then
@@ -87,12 +87,16 @@ if [[ "$final_status" =~ "Tailscale is stopped" ]] || echo "$final_status" | gre
     status_val='state-0'
     tool_tip='Stopped'
 else
-    status_val='state-1'    
-    tool_tip=$(tailscale status | awk '$NF == "-" {print $1}')
+    status_val='state-1'   
+    
+
+    tool_tip=$(tailscale status | awk '$NF == "-" {print $1; exit}')
 fi
 
 
 # Output JSON for Waybar
 echo "{\"class\": \"$status_val$display_class\", \"text\": \"$( [ "$display_text" = "true" ] && echo $( [ "$status_val" = "state-0" ] && echo "Disconnected" || echo "Connected" ) || echo "  " )\", \"tooltip\": \"$tool_tip\"}"
+
+
 
 
