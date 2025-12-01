@@ -1,0 +1,14 @@
+{
+
+    "modules-right": [
+	"custom/tailscale"
+    ],
+    "custom/tailscale": {
+	"format": "{}",
+	"return-type": "json",
+	"on-click": "$HOME/.config/waybar/tailscale/tailsale.sh toggle",
+	"restart-interval": 0, // Set to 0 for faster updates, 1 for less frequent calls
+	"exec": "$HOME/.config/waybar/tailscale/tailscale.sh status"
+    }
+
+}
