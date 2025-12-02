@@ -51,6 +51,7 @@ The click to login function only works if `tailscale set --operator=$USER` is se
 - [Tailscale](https://tailscale.com/kb/1031/install-linux)
 - [jq](https://jqlang.org/)
 - [libnotify](https://gitlab.gnome.org/GNOME/libnotify)
+
 **Optional**
 - A notifier agent
 
