@@ -105,7 +105,7 @@ The application comes with its own configuration file called `config.json` locat
 Finally the module needs to be added to the Waybar `config.jsonc` file. There is an example configuration provided in `waybar-config-example.jsonc` but it will also be shown below.
 
 Edit the `waybar/config.jsonc` file and add the following to the bottom as a custom module
-```json
+```jsonc
 "custom/tailscale": {
   "format" : "{}",
   "return-type": "json",
@@ -116,5 +116,12 @@ Edit the `waybar/config.jsonc` file and add the following to the bottom as a cus
 ```
 ensure it is named `custom/tailscale` as this is what the custom css looks for.
 The 'restart-interval` can be increased but it will of course cause there to be a delay when updating.
+
+Now insert the module on the bar
+```jsonc
+"modules-right": [
+  "custom/tailscale"
+]
+```
 
 
