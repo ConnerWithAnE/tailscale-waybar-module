@@ -68,7 +68,7 @@ This will need to be done each time you are logged out of tailscale, there is a 
 
 There are a few different areas which need to be configured all dependent how you want the module to function
 
-### Sudo Priveledves
+### Sudo Privileges
 
 To enable the module to login on click Tailscale must be given the ability to run without sudo. This can be done by running
 ```sh
