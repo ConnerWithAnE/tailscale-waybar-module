@@ -1,4 +1,6 @@
 #!/usr/bin/env bash
+# Copyright (c) 2025 Conner Hnatiuk
+# Licensed under the MIT License. See LICENSE for details.
 
 # Declare file locations
 module_location="$HOME/.config/waybar/tailscale"
@@ -6,8 +8,7 @@ config_file="$module_location/config.json"
 
 # Read config
 flags=$(jq -r '.["tailscale-up-flags"] | join(" ")' "$config_file")
-display_text=$(jq -r '.["display-connection-status"]' "$config_file")
-auth_timeout=$(jq -r '.["auth-timeout"]' "$config_file") # In seconds
+display_text=$(jq -r '.["display-status-text"]' "$config_file")
 
 if [ "$display_text" = true ]; then
     display_class="-text"

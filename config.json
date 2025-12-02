@@ -2,6 +2,5 @@
     "tailscale-up-flags" : [
 	"--accept-routes"
     ],
-    "display-connection-status" : true,
-    "auth-timeout": 120
+    "display-status-text" : true
 }

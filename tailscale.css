@@ -5,14 +5,12 @@
    color: #fff;
 }
 
-
 #custom-tailscale.state-1-text {
     background-image: url("icons/tray-on.svg");
     background-position: right center;
     padding-right: 25px;
     margin-right: 5px;
 }
-
 
 #custom-tailscale.state-0-text {
     background-image: url("icons/tray-off.svg");
